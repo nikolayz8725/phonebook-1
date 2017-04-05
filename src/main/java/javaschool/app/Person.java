@@ -14,6 +14,13 @@ public class Person extends Record {
         return email;
     }
 
+    @Override
+    public boolean contains(String str) {
+        return super.contains(str)|| email.contains(str);
+
+
+    }
+
     @Command
     public void setEmail(String email) {
         this.email = email;

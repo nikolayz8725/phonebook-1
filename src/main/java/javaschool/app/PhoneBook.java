@@ -70,15 +70,7 @@ public class PhoneBook implements ShellDependent {
         str = str.toLowerCase();
         List<Record> result = new ArrayList<>();
         for (Record r : recordList) {
-            String name = r.getName().toLowerCase();
-            String email;
-            if (r instanceof Person) {
-                Person p = (Person) r;
-                email = p.getEmail().toLowerCase();
-            } else {
-                email = "";
-            }
-            if (name.contains(str) || email.contains(str)) {
+            if (r.contains(str)){
                 result.add(r);
             }
         }

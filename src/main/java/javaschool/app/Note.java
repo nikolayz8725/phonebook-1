@@ -12,6 +12,14 @@ public class Note extends Record {
     }
 
     @Override
+    public boolean contains(String str) {
+
+        return super.contains(str)|| note.contains(str);
+
+
+    }
+
+    @Override
     public String toString() {
         return getId() + " " + getName() + " " + note;
     }

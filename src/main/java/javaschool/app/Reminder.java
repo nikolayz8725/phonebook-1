@@ -11,8 +11,10 @@ public class Reminder extends Note {
         this.time = time;
     }
 
+
     @Override
     public String toString() {
         return super.toString() + " " + time;
     }
+
 }

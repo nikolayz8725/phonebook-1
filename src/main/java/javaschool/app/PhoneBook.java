@@ -4,13 +4,13 @@ import asg.cliche.Command;
 import asg.cliche.Shell;
 import asg.cliche.ShellDependent;
 import asg.cliche.ShellFactory;
+import com.sun.xml.internal.bind.v2.model.core.ID;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class PhoneBook implements ShellDependent {
-    private List<Record> recordList = new ArrayList<>();
+    private Map<Integer, Record> recordList = new HashMap<>();
 
     @Command
     public void createPerson(String name, String email, String... phones) {
@@ -18,7 +18,7 @@ public class PhoneBook implements ShellDependent {
         r.setName(name);
         r.setEmail(email);
         r.addPhones(phones);
-        recordList.add(r);
+        recordList.put(r.getId(), r);
     }
 
     @Command
@@ -26,7 +26,7 @@ public class PhoneBook implements ShellDependent {
         Note note = new Note();
         note.setNote(txt);
         note.setName(name);
-        recordList.add(note);
+        recordList.put(note.getId(), note);
     }
 
     @Command
@@ -35,42 +35,42 @@ public class PhoneBook implements ShellDependent {
         rem.setName(name);
         rem.setNote(txt);
         rem.setTime(time);
-        recordList.add(rem);
+        recordList.put(rem.getId(), rem);
     }
 
     @Command
-    public List<Record> list() {
-        return recordList;
+    public Collection<Record> list() {
+        return recordList.values();
     }
 
     @Command
     public void addPhone(int id, String phone) {
-        for (Record r : recordList) {
-            if (r instanceof Person && r.getId() == id) {
-                Person p = (Person) r;
-                p.addPhones(phone);
-                break;
-            }
+        Record r = recordList.get(id);
+        if (r instanceof Person) {
+            Person p = (Person) r;
+            p.addPhones(phone);
         }
     }
 
     @Command
+    public Record show(int id) {
+        return recordList.get(id);
+    }
+
+    @Command
     public void edit(int id) throws IOException {
-        for (Record r : recordList) {
-            if (r.getId() == id) {
-                ShellFactory.createSubshell("#" + id, theShell, "Edit record", r)
-                        .commandLoop();
-                break;
-            }
-        }
+        Record r = recordList.get(id);
+
+        ShellFactory.createSubshell("#" + id, theShell, "Edit record", r)
+                .commandLoop();
     }
 
     @Command
     public List<Record> find(String str) {
         str = str.toLowerCase();
         List<Record> result = new ArrayList<>();
-        for (Record r : recordList) {
-            if (r.contains(str)){
+        for (Record r : recordList.values()) {
+            if (r.contains(str)) {
                 result.add(r);
             }
         }
